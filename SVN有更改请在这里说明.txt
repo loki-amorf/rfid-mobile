@@ -3,3 +3,6 @@
 
 2010-11-24 by lihaitao：
 ..\public\RequiredStatement目录下，增加了《遗留问题跟踪》文档
+
+2010-11-29 by gongxiaocong
+在public目录下增加《任务安排20101129.vsd》
