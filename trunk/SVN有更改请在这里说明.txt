@@ -6,3 +6,6 @@
 
 2010-11-29 by gongxiaocong
 在public目录下增加《任务安排20101129.vsd》
+
+2010-12-13 by lihaitao
+..\public\资料\NFC目录下，增加NFC资料
