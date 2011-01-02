@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>TRF7960/Debug</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <PreferedWindows>
+          
+          
+          
+          
+        <Position>1</Position><ScreenPosX>0</ScreenPosX><ScreenPosY>0</ScreenPosY><Windows/></PreferedWindows>
+        <ColumnWidths>
+          
+          
+          
+        <Column0>194</Column0><Column1>43</Column1><Column2>27</Column2><Column3>14676820</Column3></ColumnWidths>
+      </Workspace>
+      <Build><ColumnWidth0>34</ColumnWidth0><ColumnWidth1>702</ColumnWidth1><ColumnWidth2>187</ColumnWidth2><ColumnWidth3>46</ColumnWidth3></Build>
+      <Debug-Log/>
+    <TerminalIO/><Profiling/><Watch><Format><struct_types/><watch_formats/></Format></Watch><Disassembly><MixedMode>1</MixedMode><CodeCovEnabled>0</CodeCovEnabled><CodeCovShow>0</CodeCovShow></Disassembly></Static>
+    <Windows>
+      
+      
+    <Wnd0>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-1536-25297</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+          
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd2><Tabs><Tab><Identity>TabID-24045-29426</Identity><TabName>Workspace</TabName><Factory>Workspace</Factory><Session><NodeDict><ExpandedNode>TRF7960</ExpandedNode><ExpandedNode>TRF7960/TRF7960.c</ExpandedNode><ExpandedNode>TRF7960/main.c</ExpandedNode></NodeDict></Session></Tab></Tabs><SelectedTab>0</SelectedTab></Wnd2></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>C:\Program Files\IAR Systems\Embedded Workbench Evaluation 5.0\430\inc\msp430x12x.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\Administrator\&#x684C;&#x9762;\RFID\TRF7960\TRF7960.h</Filename><XPos>0</XPos><YPos>204</YPos><SelStart>1161</SelStart><SelEnd>1161</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>C:\Documents and Settings\Administrator\&#x684C;&#x9762;\RFID\TRF7960\TRF7960.c</Filename><XPos>0</XPos><YPos>588</YPos><SelStart>20048</SelStart><SelEnd>20048</SelEnd></Tab><ActiveTab>2</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-01389508><key>iaridepm.enu1</key></Toolbar-01389508></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>651</Bottom><Right>284</Right><x>-2</x><y>-2</y><xscreen>-2748778</xscreen><yscreen>-1559072</yscreen><sizeHorzCX>-2147482812</sizeHorzCX><sizeHorzCY>-2147482093</sizeHorzCY><sizeVertCX>223438</sizeVertCX><sizeVertCY>899449</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>30</Bottom><Right>1282</Right><x>-2</x><y>-2</y><xscreen>1284</xscreen><yscreen>-1559072</yscreen><sizeHorzCX>1003125</sizeHorzCX><sizeHorzCY>-2147482093</sizeHorzCY><sizeVertCX>-2147482812</sizeVertCX><sizeVertCY>-2147482093</sizeVertCY></Rect></Wnd0></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+
