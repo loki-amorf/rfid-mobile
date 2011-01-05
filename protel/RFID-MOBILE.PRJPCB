@@ -24,20 +24,6 @@ PowerPortNamesTakePriority=0
 PushECOToAnnotationFile=1
 
 [Document1]
-DocumentPath=msp430flash系列\msp430.PcbLib
-AnnotationEnabled=1
-AnnotateStartValue=1
-AnnotationIndexControlEnabled=0
-AnnotateSuffix=
-AnnotateScope=All
-AnnotateOrder=-1
-DoLibraryUpdate=1
-DoDatabaseUpdate=1
-ClassGenCCAutoEnabled=1
-ClassGenCCAutoRoomEnabled=1
-ClassGenNCAutoScope=None
-
-[Document2]
 DocumentPath=QFN_Sq_50P_Side_N.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -51,21 +37,21 @@ ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
-[Document3]
+[Document2]
 DocumentPath=MSP-RFID.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
 AnnotateScope=All
-AnnotateOrder=-1
+AnnotateOrder=1
 DoLibraryUpdate=1
 DoDatabaseUpdate=1
 ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
-[Document4]
+[Document3]
 DocumentPath=GSM.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -79,7 +65,7 @@ ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
-[Document5]
+[Document4]
 DocumentPath=GSM.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -93,7 +79,7 @@ ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
-[Document6]
+[Document5]
 DocumentPath=GSMPart.PcbDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -107,21 +93,21 @@ ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
-[Document7]
+[Document6]
 DocumentPath=GSMPart.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
 AnnotateSuffix=
 AnnotateScope=All
-AnnotateOrder=-1
+AnnotateOrder=0
 DoLibraryUpdate=1
 DoDatabaseUpdate=1
 ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
-[Document8]
+[Document7]
 DocumentPath=Standard.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -135,7 +121,7 @@ ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
-[Document9]
+[Document8]
 DocumentPath=nfc.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -149,7 +135,7 @@ ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
-[Document10]
+[Document9]
 DocumentPath=msp430.SchLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -163,7 +149,7 @@ ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
-[Document11]
+[Document10]
 DocumentPath=QFP_Shrink_Sq_50P_Side_N.PcbLib
 AnnotationEnabled=1
 AnnotateStartValue=1
@@ -176,9 +162,6 @@ DoDatabaseUpdate=1
 ClassGenCCAutoEnabled=1
 ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
-
-[GeneratedDocument1]
-DocumentPath=..\PCB投板\pcb__国敏组\maincontrol\main_control.PcbDoc.htm
 
 [OutputGroup1]
 Name=Netlist Outputs
