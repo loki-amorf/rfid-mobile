@@ -206,10 +206,7 @@ ClassGenCCAutoRoomEnabled=1
 ClassGenNCAutoScope=None
 
 [GeneratedDocument1]
-DocumentPath=mainPCB.PcbDoc.htm
-
-[GeneratedDocument2]
-DocumentPath=Standard.PcbLib.htm
+DocumentPath=ProjectOutputs\Design Rule Check - mainPCB.html
 
 [OutputGroup1]
 Name=Netlist Outputs
