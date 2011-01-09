@@ -1,0 +1,6 @@
+[ProjectGroup]
+Version=1.0
+[Project1]
+ProjectPath=MSP-GSM\MSP-GSM.PRJPCB
+[Project2]
+ProjectPath=NFC\NFC.PrjPCB
