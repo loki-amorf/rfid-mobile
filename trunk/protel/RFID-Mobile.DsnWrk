@@ -4,3 +4,5 @@ Version=1.0
 ProjectPath=MSP-GSM\MSP-GSM.PRJPCB
 [Project2]
 ProjectPath=NFC\NFC.PrjPCB
+[Project3]
+ProjectPath=Antenna\Antenna.PrjPCB
