@@ -1,17 +1,16 @@
 #include <msp430x24x.h>
+#include <string.h>
 #include "helper_bits.h"
 #include "driver_lcd.h"
 
 void main(void)
 {
-	char ii;
-	
 	initLcd();
 	
-	for (ii = 0x02; ii <= 0x7F; ++ii) {
-		writeData(ii);
-	}
+	setPos(2, 1);
+	char *str = "Hello World!";
+	writeStr(str, strlen(str));
 	
 	while (1)
-	;
+		; // NULL
 }
