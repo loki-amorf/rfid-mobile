@@ -20,13 +20,29 @@
 #define LCD_DPIN_DIR_IN (P4DIR = 0x00)
 #define LCD_CPIN_DIR_OUT (P5DIR |= (LCD_RS | LCD_RW | LCD_E | LCD_PSB | LCD_nRET))
 
-// initialize LCD display
-void initLcd(void);
+#define LCD_CHAR_LINES 4
+#define LCD_CHAR_COLS 8
 
 // write instruction to DB0~7
 void writeInst(char inst);
 
 // write data to DB0~7
 void writeData(char data);
+
+// initialize LCD display
+void initLcd(void);
+
+// clear LCD display
+void clearLcd(void);
+
+// invert display (not functioning)
+void invertLcd(void);
+
+// write string given a string and its length
+void writeStr(char *str, int len);
+
+// set position given line and column (0-indexed!)
+void setPos(int row, int col);
+
 
 #endif /*DRIVER_LCD_H_*/

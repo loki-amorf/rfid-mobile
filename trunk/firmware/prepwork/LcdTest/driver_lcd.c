@@ -38,6 +38,37 @@ void writeData(char data)
 	BIT_UNSET(LCD_CTRL, LCD_E); // write to
 }
 
+void writeStr(char *str, int len)
+{
+	int ii;
+
+	for (ii = 0; ii < len; ++ii) {
+		// wait for BF set
+		LCD_DPIN_DIR_IN;
+		BIT_UNSET(LCD_CTRL, LCD_RS); // instruction
+		BIT_SET(LCD_CTRL, LCD_RW); // read
+		BIT_SET(LCD_CTRL, LCD_E); // enable read
+		do {
+			; //NULL
+		} while (LCD_IN & LCD_BF);
+
+		// write one char
+		BIT_SET(LCD_CTRL, LCD_RS); // data
+		BIT_UNSET(LCD_CTRL, LCD_RW); // write
+		LCD_DPIN_DIR_OUT;
+		LCD_OUT = str[ii];
+		BIT_UNSET(LCD_CTRL, LCD_E); // write to
+	}
+}
+
+void setPos(int row, int col)
+{
+	char ddramPos;
+	
+	ddramPos = 0x80 + col + row * LCD_CHAR_COLS;
+	writeInst(ddramPos);
+}
+
 void initLcd(void)
 {	
 	// control pins direction out
@@ -46,9 +77,24 @@ void initLcd(void)
 	// choose parallel mode
 	BIT_SET(LCD_CTRL, LCD_PSB);
 	
+	// choose basic instruction set
+	writeInst(0x30);
+	
 	// clear display
 	writeInst(0x01);
 	
 	// enable display, diable cursor
 	writeInst(0x0C);
+}
+
+void clearLcd(void)
+{
+	writeInst(0x01);
+}
+
+void invertLcd(void)
+{
+	writeInst(0x34); // select extended instruction set
+	writeInst(0x07);
+	writeInst(0x30); // return to basic instruction set
 }
