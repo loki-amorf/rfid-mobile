@@ -4,7 +4,13 @@
 
 void main(void)
 {
+	char ii;
+	
 	initLcd();
+	
+	for (ii = 0x02; ii <= 0x7F; ++ii) {
+		writeData(ii);
+	}
 	
 	while (1)
 	;
