@@ -5,11 +5,20 @@
 
 void main(void)
 {
-	initLcd();
+	WDTCTL = WDTPW + WDTHOLD;
 	
-	setPos(2, 1);
-	char *str = "Hello World!";
-	writeStr(str, strlen(str));
+	initLcd();
+
+	//setCharPos(0, 0);
+	//writeStr("Line-0");
+	//setCharPos(1, 0);
+	//writeStr("Line-1");
+	//setCharPos(2, 0);
+	//writeStr("Line-2");
+    //setCharPos(3, 0);
+	//writeStr("Line-3");
+
+   	graphTest();
 	
 	while (1)
 		; // NULL
