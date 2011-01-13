@@ -1,5 +1,5 @@
 #include "driver_lcd.h"
-#include "helper_bits.h"
+#include "helpers.h"
 
 void writeInst(char inst)
 {
@@ -7,6 +7,7 @@ void writeInst(char inst)
     LCD_DPIN_DIR_IN;
     BIT_UNSET(LCD_CTRL, LCD_RS); // instruction
     BIT_SET(LCD_CTRL, LCD_RW); // read
+    // BIT_UNSET(LCD_CTRL, LCD_E);
     BIT_SET(LCD_CTRL, LCD_E);
     do {
         ; //NULL
@@ -19,12 +20,30 @@ void writeInst(char inst)
     BIT_UNSET(LCD_CTRL, LCD_E); // write to
 }
 
+uint8 readRam(void)
+{
+    // wait for BF set
+    LCD_DPIN_DIR_IN;
+    BIT_UNSET(LCD_CTRL, LCD_RS); // instruction
+    BIT_SET(LCD_CTRL, LCD_RW); // read
+    BIT_SET(LCD_CTRL, LCD_E);
+    do {
+        ; //NULL
+    } while (LCD_IN & LCD_BF);
+
+    BIT_SET(LCD_CTRL, LCD_RS); // data
+    BIT_UNSET(LCD_CTRL, LCD_E);
+    BIT_SET(LCD_CTRL, LCD_E);
+    return LCD_IN;
+}
+
 void writeData(char data)
 {
     // wait for BF set
     LCD_DPIN_DIR_IN;
     BIT_UNSET(LCD_CTRL, LCD_RS); // instruction
     BIT_SET(LCD_CTRL, LCD_RW); // read
+    // BIT_UNSET(LCD_CTRL, LCD_E);
     BIT_SET(LCD_CTRL, LCD_E);
     do {
         ; //NULL
@@ -36,24 +55,6 @@ void writeData(char data)
     BIT_UNSET(LCD_CTRL, LCD_RW); // write mode
     LCD_OUT = data;
     BIT_UNSET(LCD_CTRL, LCD_E); // write to
-}
-
-void graphTest(void)
-{
-	int x, y;
-	
-    writeInst(LCD_EXT_INST_SET); // extended instruction set
-    writeInst(LCD_INSTEX_GRAOFF); // graphics off
-    
-    x = 15;
-    for (y = 0; y < 32; ++y) {
-		writeInst(0x80 + y);
-		writeInst(0x80 + x);
-		writeData(0xFF);
-		writeData(0xFF);
-    }
-    
-    writeInst(LCD_INSTEX_GRAON); // graphics on
 }
 
 void writeStr(char *str)
@@ -88,9 +89,6 @@ void setCharPos(int row, int col)
     char ddramPos;
 
     switch (row) {
-    	case 0:
-    	break;
-    	
     	case 1:
     	row = 2;
     	break;
@@ -99,7 +97,7 @@ void setCharPos(int row, int col)
     	row = 1;
     	break;
     	
-    	case 3:
+    	default:
     	break;
     }
     ddramPos = LCD_CHAR_BASEADDR + col + row * LCD_CHAR_COLS;
@@ -131,18 +129,31 @@ void clearLcd(void)
     writeInst(LCD_INST_CLR);
 }
 
-void invertLine(int line)
+void invertLine(int line) // need modification
 {
 	writeInst(LCD_EXT_INST_SET);
 	writeInst(0x04 + line);
+}
+
+uint8 xyToLcdXY(uint8 x0, uint8 y0, uint8 *pLcd_x, uint8 *pLcd_y)
+{
+    if (y0 & 0x20) { // y0 > 31
+        *pLcd_y = y0 & (~0x20); // lcd_y = y0 - 32;
+        *pLcd_x = (x0 >> 4) | 0x08; // lcd_x = x0 / 16 + 8;
+        return (x0 & 0x0F); // lower 4 bits
+    }
+    else {
+        *pLcd_y = x0;
+        *pLcd_x = (x0 >> 4);
+        return (x0 & 0x0F);
+    }
 }
 
 void initGraph(void)
 {
 	// clear GDRAM
 	int x, y;
-	writeInst(LCD_EXT_INST_SET);
-	writeInst(LCD_INSTEX_GRAOFF);
+    beginDraw();
     for (x = 0; x < 16; ++x) {
 	    for (y = 0; y < 32; ++y) {
 			writeInst(0x80 + y);
@@ -151,6 +162,32 @@ void initGraph(void)
 			writeData(0x00);
 	    }
     }
-	// graphics on
-	writeInst(LCD_INSTEX_GRAON);
+	endDraw();
+}
+
+void beginDraw(void)
+{
+    writeInst(LCD_EXT_INST_SET);
+    writeInst(LCD_INSTEX_GRAOFF);
+}
+
+void endDraw(void)
+{
+    writeInst(LCD_INSTEX_GRAON);
+    writeInst(LCD_BASIC_INST_SET);
+}
+
+void graphTest(void)
+{
+    int x, y;
+    
+    beginDraw();
+    x = 15;
+    for (y = 0; y < 32; ++y) {
+        writeInst(0x80 + y);
+        writeInst(0x80 + x);
+        writeData(0xAA);
+        writeData(0xFE);
+    }
+    endDraw();
 }

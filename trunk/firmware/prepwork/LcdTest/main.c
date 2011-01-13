@@ -1,7 +1,8 @@
 #include <msp430x24x.h>
 #include <string.h>
-#include "helper_bits.h"
+#include "helpers.h"
 #include "driver_lcd.h"
+#include "system_gui.h"
 
 void main(void)
 {
@@ -9,16 +10,13 @@ void main(void)
 	
 	initLcd();
 
-	//setCharPos(0, 0);
-	//writeStr("Line-0");
-	//setCharPos(1, 0);
-	//writeStr("Line-1");
-	//setCharPos(2, 0);
-	//writeStr("Line-2");
-    //setCharPos(3, 0);
-	//writeStr("Line-3");
+    setCharPos(3, 0);
+    writeStr("Line-3");
 
    	graphTest();
+    
+    drawPixel(3, 3);
+    drawLine(0, 0, 20, 20);
 	
 	while (1)
 		; // NULL

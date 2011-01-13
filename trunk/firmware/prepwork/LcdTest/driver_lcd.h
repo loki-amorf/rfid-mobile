@@ -3,6 +3,7 @@
 
 
 #include <msp430x24x.h>
+#include "helpers.h"
 
 // pins assignment
 #define LCD_CTRL	        (P5OUT)
@@ -72,6 +73,9 @@ void writeInst(char inst);
 // write data to DB0~7
 void writeData(char data);
 
+// read RAM
+uint8 readRam(void);
+
 // initialize LCD display
 void initLcd(void);
 
@@ -84,11 +88,20 @@ void writeStr(char *str);
 // set char position given line and column (0-indexed!)
 void setCharPos(int row, int col);
 
+// transform x y to lcd_x lcd_y, return relative x
+uint8 xyToLcdXY(uint8 x0, uint8 y0, uint8 *pLcd_x, uint8 *pLcd_y);
+
 // invert line
 void invertLine(int line);
 
 // clear GDRAM and enable graphics
 void initGraph(void);
+
+// enter ex_inst and turn off graphics show
+void beginDraw(void);
+
+// turn on graphics show and leave ex_inst
+void endDraw(void);
 
 // TEST: graph test
 void graphTest(void);
