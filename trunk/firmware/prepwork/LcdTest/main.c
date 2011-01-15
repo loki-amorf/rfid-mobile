@@ -2,7 +2,6 @@
 #include <string.h>
 #include "helpers.h"
 #include "driver_lcd.h"
-#include "system_gui.h"
 
 void main(void)
 {
@@ -10,14 +9,24 @@ void main(void)
 	
 	initLcd();
 
-    setCharPos(3, 0);
-    writeStr("Line-3");
-
-   	graphTest();
+    int i;
     
-    drawPixel(3, 3);
-    drawLine(0, 0, 20, 20);
-	
-	while (1)
-		; // NULL
+//#define LINE_TEST_1
+//#define LINE_TEST_2
+
+#ifdef LINE_TEST_1
+    for (i = 0; i < LCD_PIXEL_Y; i += 5) {
+        drawLine(0, i, LCD_PIXEL_X - 1, LCD_PIXEL_Y - i);
+    }
+#endif
+
+#ifdef LINE_TEST_2
+    for (i = 0; i < LCD_PIXEL_Y; ++i) {
+        drawLine(0, i, LCD_PIXEL_X - 1, i);
+    }
+#endif
+
+    do {
+        ;
+    } while (1);
 }

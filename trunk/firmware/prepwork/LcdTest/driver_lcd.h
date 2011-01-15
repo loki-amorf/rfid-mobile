@@ -26,6 +26,8 @@
 // LCD size
 #define LCD_CHAR_LINES      (4)
 #define LCD_CHAR_COLS       (8)
+#define LCD_PIXEL_X         (128)
+#define LCD_PIXEL_Y         (64)
 
 // address
 #define LCD_CHAR_BASEADDR   (0x80)
@@ -88,9 +90,6 @@ void writeStr(char *str);
 // set char position given line and column (0-indexed!)
 void setCharPos(int row, int col);
 
-// transform x y to lcd_x lcd_y, return relative x
-uint8 xyToLcdXY(uint8 x0, uint8 y0, uint8 *pLcd_x, uint8 *pLcd_y);
-
 // invert line
 void invertLine(int line);
 
@@ -103,7 +102,11 @@ void beginDraw(void);
 // turn on graphics show and leave ex_inst
 void endDraw(void);
 
-// TEST: graph test
-void graphTest(void);
+// draw single pixel, low efficiency
+void drawPixel(uint8 x0, uint8 y0);
+
+// connect (x0, y0) and (x1, y1) using straight line
+void drawLine(int x0, int y0, int x1, int y1);
+
 
 #endif /*DRIVER_LCD_H_*/
