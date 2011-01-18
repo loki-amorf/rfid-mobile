@@ -6,17 +6,7 @@
 
 typedef unsigned char uint8;
 
-void delay(int x)
-{
-    int i, j;
-    
-    i = x;
-    do {
-        j = 100;
-        do {
-            --j;
-        } while (j != 0);
-    } while (i != 0);
-}
+// delay function
+void delay(int x);
 
 #endif /*HELPER_TYPES_H_*/

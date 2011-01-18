@@ -38,7 +38,7 @@ void MainWindow::on_actionOpen_triggered()
         return;
 
     // gray -> mono
-    newImage = origImage.scaled(newImage.size(), Qt::IgnoreAspectRatio);
+    newImage = origImage.scaled(newImage.size(), Qt::IgnoreAspectRatio, Qt::FastTransformation);
     newImage = newImage.convertToFormat(QImage::Format_Mono, Qt::MonoOnly);
 
     // show in render area
