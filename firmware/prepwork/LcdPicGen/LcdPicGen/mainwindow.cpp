@@ -55,7 +55,7 @@ void MainWindow::on_actionOpen_triggered()
     QString codeHeader, codeEntity;
 
     for (lcd_y = 0; lcd_y < 32; ++lcd_y) {
-        for (lcd_x = 0; lcd_x < 15; ++lcd_x) {
+        for (lcd_x = 0; lcd_x < 16; ++lcd_x) {
             //lcd_x, lcd_y -> x, y
             x = (lcd_x > 7) ? (lcd_x - 8) * 2 : lcd_x * 2;
             y = lcd_y + (lcd_x / 8) * 32;
