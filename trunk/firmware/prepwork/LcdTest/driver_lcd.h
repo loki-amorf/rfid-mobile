@@ -87,6 +87,9 @@ void clearLcd(void);
 // write string given a string and its length
 void writeStr(char *str);
 
+// write first n bytes of str
+void writeNStr(char *str, int n);
+
 // set char position given line and column (0-indexed!)
 void setCharPos(int row, int col);
 
@@ -108,5 +111,7 @@ void drawPixel(uint8 x0, uint8 y0);
 // connect (x0, y0) and (x1, y1) using straight line
 void drawLine(int x0, int y0, int x1, int y1);
 
+// draw picture to LCD using a special encoding style
+void drawPicture(const uint8 *pic, int totalLen);
 
 #endif /*DRIVER_LCD_H_*/
