@@ -14,8 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    newImage = QImage(LCD_PIXEL_COLS, LCD_PIXEL_LINES, QImage::Format_Mono);
-    MainWindow::totalBytes = 0;
 }
 
 MainWindow::~MainWindow()
@@ -25,11 +23,19 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionOpen_triggered()
 {
+    // initializing
+    ui->outputText->clear();
+    newImage = QImage(LCD_PIXEL_COLS, LCD_PIXEL_LINES, QImage::Format_Mono);
+    MainWindow::totalBytes = 0;
+    MainWindow::code.clear();
+
     // open image file
     QString pictureFileName;
     pictureFileName = QFileDialog::getOpenFileName(this, tr("Open Image"), "",
                                                    tr("Image Files (*.jpg *.png *.bmp)"));
     this->origImage = QImage(pictureFileName);
+    if (this->origImage.isNull())
+        return;
 
     // gray -> mono
     newImage = origImage.scaled(newImage.size(), Qt::IgnoreAspectRatio);
@@ -72,6 +78,7 @@ void MainWindow::on_actionOpen_triggered()
                     // write 0x00 to code
                     for (int i = 0; i < (MAX_TOLERANCE - tolerance); ++i) {
                         appendHexStr(codeEntity, 0x00);
+                        appendHexStr(codeEntity, 0x00);
                         entityLen += (MAX_TOLERANCE - tolerance);
                     }
                 else {
@@ -93,6 +100,9 @@ void MainWindow::on_actionOpen_triggered()
         encoding = false;
         tolerance = MAX_TOLERANCE;
     }
+
+    // cut tail
+    MainWindow::code.resize(MainWindow::code.size() - 2);
 
     // display code result and statics
     ui->outputText->insertPlainText(MainWindow::code);

@@ -111,6 +111,29 @@ void writeStr(char *str)
     }
 }
 
+void writeNStr(char *str, int n)
+{
+    int i;
+    
+    for (i = 0; i < n; ++i) {
+        // wait for BF set
+        LCD_DPIN_DIR_IN;
+        BIT_UNSET(LCD_CTRL, LCD_RS); // instruction
+        BIT_SET(LCD_CTRL, LCD_RW); // read
+        BIT_SET(LCD_CTRL, LCD_E); // enable read
+        do {
+            ;
+        } while (LCD_IN & LCD_BF);
+
+        // write one char
+        BIT_SET(LCD_CTRL, LCD_RS); // data
+        BIT_UNSET(LCD_CTRL, LCD_RW); // write
+        LCD_DPIN_DIR_OUT;
+        LCD_OUT = str[i];
+        BIT_UNSET(LCD_CTRL, LCD_E); // write to
+    }
+}
+
 void writeNChars(char c, int n)
 {
     int i;
@@ -270,7 +293,27 @@ void drawLine(int x0, int y0, int x1, int y1)
     }
 }
 
-void drawPicture(uint8 *pic)
+void drawPicture(const uint8 *pic, int totalLen)
 {
+    int index = 0;
+    const uint8 *pCurr = pic;
+    uint8 cnt;
     
+    beginDraw();
+    while (index < totalLen) {
+        // first 2 bytes as position
+        writeInst(0x80 + *(pCurr + 0));
+        writeInst(0x80 + *(pCurr + 1));
+        
+        // 3rd byte as counter
+        cnt = *(pCurr + 2);
+        
+        // write cnt bytes to ram
+        writeNStr((char *)(pCurr + 3), cnt);
+        
+        // add index, move pCurr
+        index += (cnt + 3);
+        pCurr += (cnt + 3);
+    }
+    endDraw();
 }
