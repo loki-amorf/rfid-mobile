@@ -27,7 +27,7 @@ typedef uchar portType;
 
 /* define Recive eXchange Interrupt Function Point and
  * transfer the recive buffer's data to function's input. */
-typedef void (* RXIFunP)(uchar);
+typedef void (* RXIFunP)(char);
 /* define Transfer eXchange Interrupt Function Point.
  * if transfer buffer is ready, the function of this type
  * of point will be calling. */

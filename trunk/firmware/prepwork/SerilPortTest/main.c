@@ -5,15 +5,17 @@
 #include "serial_port_driver.h"
 
 // deal with the recieve data when RX0 interrupt occur.
-void RX0IOccured(uchar buf)
+void RX0IOccured(char buf)
 {
-    while (!(SPDI_IsReadyToWrite(URAT0)&SPDI_IsReadyToWrite(URAT0)))
-        ;                               // USCI_A0 & USCI_A1 TX buffer ready?
-    UCA1TXBUF = buf;                    // TX -> RXed character
-    UCA0TXBUF = buf;                    // TX -> RXed character
+    // if write buffer not ready, waite to ready.
+    while (SPDI_Write(URAT0, &buf, 1) == SP_ERR_WRITE_NOT_READY)
+        ;
+    //while (!(IFG2&UCA0TXIFG));              // USCI_A0 TX buffer ready?
+    //UCA0TXBUF = buf;                        // TX -> RXed character
+    //SPDI_Write(URAT1, &buf, 1);
 }
 // deal with the recieve data when RX1 interrupt occur.
-void RX1IOccured(uchar buf)
+void RX1IOccured(char buf)
 {
     while (!SPDI_IsReadyToWrite(URAT0))
         ;                               // USCI_A0 TX buffer ready?
@@ -26,7 +28,7 @@ void main(void)
 
     if (SPDI_Initial() == SP_ERR_CAL_CONST_ERASED)                                     
     {
-        while(1);                               // If calibration constants erased
+        while(1);                           // If calibration constants erased
                                             // do not load, trap CPU!!
     }
 
@@ -35,6 +37,8 @@ void main(void)
 
     SPDI_Open(URAT0, BAUDRATE115k);
     SPDI_Open(URAT1, BAUDRATE115k);
+    
+    SPDI_Write(URAT0, "hello world!\r\n", 12);
 
     while(1)
         ;
