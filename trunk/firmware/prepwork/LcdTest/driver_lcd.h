@@ -97,7 +97,7 @@ void setCharPos(int row, int col);
 void invertLine(int line);
 
 // clear GDRAM and enable graphics
-void initGraph(void);
+void clearGraph(void);
 
 // enter ex_inst and turn off graphics show
 void beginDraw(void);
