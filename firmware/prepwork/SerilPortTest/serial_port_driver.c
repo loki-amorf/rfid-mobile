@@ -7,7 +7,7 @@
 #define BUF_LENGTH  40
 
 // define empty functions for function points.
-void emptyFunUChar(uchar x) {}
+void emptyFunUChar(char x) {}
 void emptyFunVoid() {}
 
 // initial the static function points with empty function.
@@ -177,12 +177,22 @@ int SPDI_IsReadyToWrite(portType port)
 {
     switch (port) {
     case URAT0:
-        if (tx0BufferAddress != tx0BufferPosition)
-            return FALSE;   // if not ready, return FALSE
+        // if not ready, Open the transfer interrupt and return FALSE
+        if (tx0BufferAddress != tx0BufferPosition) {
+            UC0IE |= UCA0TXIE;
+            // force open interrupt enable to make transfer interrupt available.
+            __bis_SR_register(GIE);
+            return FALSE;
+        }
         break;
     case URAT1:
-        if (tx1BufferAddress != tx1BufferPosition)
-            return FALSE;   // if not ready, return FALSE
+        // if not ready, Open the transfer interrupt and return FALSE
+        if (tx1BufferAddress != tx1BufferPosition) {
+            UC1IE |= UCA1TXIE;
+            // force open interrupt enable to make transfer interrupt available.
+            __bis_SR_register(GIE);
+            return FALSE;
+        }
         break;
     default:
         return FALSE;
@@ -263,27 +273,6 @@ int SPDI_ReadAll(portType port, char *data, uchar length)
 }
 
 /*
- * Name: writeByte
- * Write a byte to the seril port.
- */
-int writeByte(portType port, char byte)
-{
-    switch(port) {
-    case URAT0:
-        UCA0TXBUF = byte;
-        UC0IE |= UCA0TXIE;              // Open the transfer interrupt
-        break;
-    case URAT1:
-        UCA1TXBUF = byte;
-        UC1IE |= UCA1TXIE;              // Open the transfer interrupt
-        break;
-    default:
-        return SP_ERR_NO_SERIL_PORT;
-    }
-
-    return SP_NORMAL;
-}
-/*
  * Name: SPDI_Write
  * Write the data with length to seril port and return the result.
  *
@@ -320,13 +309,15 @@ int SPDI_Write(portType port, char *data, uchar length)
         while (tx0BufferPosition < tx0BufferAddress + length) {
              *(tx0BufferPosition++) = *(data--);
         }
+        UC0IE |= UCA0TXIE;              // Open the transfer interrupt
         break;
     case URAT1:
         tx1BufferPosition = tx1BufferAddress;
         data += length - 1;
-        while (tx0BufferPosition < tx0BufferAddress + length) {
-             *(tx0BufferPosition++) = *(data--);
+        while (tx1BufferPosition < tx1BufferAddress + length) {
+             *(tx1BufferPosition++) = *(data--);
         }
+        UC1IE |= UCA1TXIE;              // Open the transfer interrupt
         break;
     default:
         return SP_ERR_NO_SERIL_PORT;
@@ -353,12 +344,22 @@ __interrupt void USCI1RX_ISR(void)
 #pragma vector=USCIAB0TX_VECTOR
 __interrupt void USCI0TX_ISR(void)
 {
-    UC0IE &= ~UCA0TXIE;             // Close the transfer interrupt
+    UC0IE &= ~UCA0TXIE;             // Close the transfer interrupt first.
+    // sending the reast content if not reach the head
+    if (tx0BufferAddress != tx0BufferPosition) {
+        UC0IE |= UCA0TXIE;          // Open the transfer interrupt
+        UCA0TXBUF = *(--tx0BufferPosition);
+    }
     tx0FuncP();
 }
 #pragma vector=USCIAB1TX_VECTOR
 __interrupt void USCI1TX_ISR(void)
 {
     UC1IE &= ~UCA1TXIE;             // Close the transfer interrupt
+    // sending the reast content if not reach the head
+    if (tx1BufferAddress != tx1BufferPosition) {
+        UC1IE |= UCA1TXIE;          // Open the transfer interrupt
+        UCA1TXBUF = *(--tx1BufferPosition);
+    }
     tx1FuncP();
 }
