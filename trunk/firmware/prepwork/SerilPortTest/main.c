@@ -4,12 +4,15 @@
 #include "msp430x24x.h"
 #include "serial_port_driver.h"
 
+int test_RX0_count;
+
 // deal with the recieve data when RX0 interrupt occur.
 void RX0IOccured(char buf)
 {
+    ++test_RX0_count;
     // if write buffer not ready, waite to ready.
-    while (SPDI_Write(URAT0, &buf, 1) == SP_ERR_WRITE_OVERTIME)
-        ;
+    //while (SPDI_Write(URAT0, &buf, 1) == SP_ERR_WRITE_OVERTIME)
+    //    ;
     //SPDI_Write(URAT1, &buf, 1);
 }
 // deal with the recieve data when RX1 interrupt occur.
@@ -22,6 +25,10 @@ void RX1IOccured(char buf)
 
 void main(void)
 {
+    test_RX0_count = 0;
+    int length = 40;
+    char buf[40];
+    
     WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
 
     if (SPDI_Initial() == SP_ERR_CAL_CONST_ERASED)                                     
@@ -31,13 +38,18 @@ void main(void)
     }
 
     SPDI_SetRX0FunP(RX0IOccured);
-    SPDI_SetRX1FunP(RX1IOccured);
+    //SPDI_SetRX1FunP(RX1IOccured);
 
     SPDI_Open(URAT0, BAUDRATE115k);
     SPDI_Open(URAT1, BAUDRATE115k);
-    
+
     SPDI_Write(URAT0, "hello world!\r\n", 12);
 
-    while(1)
-        ;
+    while(1) {
+        if (SPDI_IsReadyToRead(URAT0)) {
+            length = SPDI_ReadAll(URAT0, buf, 40);
+            if (length > 0)
+                SPDI_Write(URAT0, buf, length);
+        }
+    }
 }
