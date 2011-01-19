@@ -168,7 +168,7 @@ void initLcd(void)
     clearLcd();
     
     // clear GDRAM and enable graph display
-    initGraph();
+    clearGraph();
 
     // choose basic instrucion set
     writeInst(LCD_BASIC_INST_SET);
@@ -195,7 +195,7 @@ void endDraw(void)
     writeInst(LCD_BASIC_INST_SET);
 }
 
-void initGraph(void)
+void clearGraph(void)
 {
 	// clear GDRAM
 	int lcd_y;

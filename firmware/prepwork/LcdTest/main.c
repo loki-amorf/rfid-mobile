@@ -13,7 +13,7 @@ void main(void)
     // main menu background and icons
     drawPicture(res_appleLogo, sizeof(res_appleLogo));
     delay(2000);
-    initGraph();
+    clearGraph();
     drawPicture(res_mainmenu, sizeof(res_mainmenu));
     
     // main menu chars
