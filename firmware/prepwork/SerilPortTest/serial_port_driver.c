@@ -263,28 +263,7 @@ int SPDI_ReadAll(portType port, char *data, uchar length)
 
 /*
  * Name: SPDI_Write
- * Write the data with length to seril port and return the result.
- *
- * algorithm:
- *  the tx0BufferPosition point the TX0 Buffer address.
- *  the data point the last byte of data.
- *  this two points move towards difference direction.
- *  like the following diagram:
- * 
- *  tx0BufferPosition
- *     |
- *     V -->
- *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
- *     ^                        <-- ^
- *     |<-------- length ---------->|
- *  tx0BufferAddress               data
- * 
- *  The reason why we do this is to make the xxPosition pointer
- *  can signify the length of buffer with xxAddress.
- * 
- *  When sending the data, xxPosition will decrease. You can see
- *  that using the method above can insure that the data are sending
- *  in right order. 
+ *  Write the data with length to seril port and return the result.
  */
 int SPDI_Write(portType port, char *data, uchar length)
 {
