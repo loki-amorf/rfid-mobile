@@ -17,7 +17,8 @@
 #define SP_ERR_NO_SERIL_PORT    3           // no such type of seril port.
 #define SP_ERR_BUFFER_TOO_SHORT 4           // the input data buffer too short.
 #define SP_ERR_WRITE_NOT_READY  5           // not ready to write
-#define SP_ERR_READ_NOT_READY   5           // not ready to read
+#define SP_ERR_READ_NOT_READY   6           // not ready to read
+#define SP_ERR_WRITE_OVERTIME    7           // serial write overtime.
 
 #define TRUE    1
 #define FALSE   0

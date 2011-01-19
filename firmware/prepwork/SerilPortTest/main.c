@@ -8,10 +8,8 @@
 void RX0IOccured(char buf)
 {
     // if write buffer not ready, waite to ready.
-    while (SPDI_Write(URAT0, &buf, 1) == SP_ERR_WRITE_NOT_READY)
+    while (SPDI_Write(URAT0, &buf, 1) == SP_ERR_WRITE_OVERTIME)
         ;
-    //while (!(IFG2&UCA0TXIFG));              // USCI_A0 TX buffer ready?
-    //UCA0TXBUF = buf;                        // TX -> RXed character
     //SPDI_Write(URAT1, &buf, 1);
 }
 // deal with the recieve data when RX1 interrupt occur.

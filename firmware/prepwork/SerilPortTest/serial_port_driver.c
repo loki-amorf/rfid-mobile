@@ -6,6 +6,9 @@
 // define the buffer length of serial port.
 #define BUF_LENGTH  40
 
+// define overtime counts
+#define SP_OVERTIME_COUNT   10000
+
 // define empty functions for function points.
 void emptyFunUChar(char x) {}
 void emptyFunVoid() {}
@@ -20,15 +23,9 @@ static TXIFunP tx1FuncP;
 // define recieve exchange buffer variables.
 static char rx0BufferAddress[BUF_LENGTH];
 static char *rx0BufferPosition;
-// define transfer exchange buffer variables.
-static char tx0BufferAddress[BUF_LENGTH];
-static char *tx0BufferPosition;
 // define recieve exchange buffer variables.
 static char rx1BufferAddress[BUF_LENGTH];
 static char *rx1BufferPosition;
-// define transfer exchange buffer variables.
-static char tx1BufferAddress[BUF_LENGTH];
-static char *tx1BufferPosition;
 
 /*
  * Name: SPDI_Initial
@@ -52,8 +49,6 @@ int SPDI_Initial()
     
     rx0BufferPosition = rx0BufferAddress;
     rx1BufferPosition = rx1BufferAddress;
-    tx0BufferPosition = tx0BufferAddress;
-    tx1BufferPosition = tx1BufferAddress;
     
     return SP_NORMAL;           // normal.
 }
@@ -177,20 +172,14 @@ int SPDI_IsReadyToWrite(portType port)
 {
     switch (port) {
     case URAT0:
-        // if not ready, Open the transfer interrupt and return FALSE
-        if (tx0BufferAddress != tx0BufferPosition) {
-            UC0IE |= UCA0TXIE;
-            // force open interrupt enable to make transfer interrupt available.
-            __bis_SR_register(GIE);
+        // if not ready, return FALSE
+        if (!(UC0IFG&UCA0TXIFG)) {
             return FALSE;
         }
         break;
     case URAT1:
-        // if not ready, Open the transfer interrupt and return FALSE
-        if (tx1BufferAddress != tx1BufferPosition) {
-            UC1IE |= UCA1TXIE;
-            // force open interrupt enable to make transfer interrupt available.
-            __bis_SR_register(GIE);
+        // if not ready, return FALSE
+        if (!(UC1IFG&UCA1TXIFG)) {
             return FALSE;
         }
         break;
@@ -299,25 +288,36 @@ int SPDI_ReadAll(portType port, char *data, uchar length)
  */
 int SPDI_Write(portType port, char *data, uchar length)
 {
+    char *byte;
+    int  tc= 0;        // for overtime count
+
     if (!SPDI_IsReadyToWrite(port))
         return SP_ERR_WRITE_NOT_READY;
 
     switch(port) {
     case URAT0:
-        tx0BufferPosition = tx0BufferAddress;
-        data += length - 1;
-        while (tx0BufferPosition < tx0BufferAddress + length) {
-             *(tx0BufferPosition++) = *(data--);
+        // serial write the data
+        for (byte = data; byte < data + length; ++byte) {
+            // wait transfer buffer ready till overtime
+            while (!(UC0IFG&UCA0TXIFG)) {
+                if (++tc == SP_OVERTIME_COUNT)
+                    return SP_ERR_WRITE_OVERTIME;
+            }
+
+            UCA0TXBUF = *byte;
         }
-        UC0IE |= UCA0TXIE;              // Open the transfer interrupt
         break;
     case URAT1:
-        tx1BufferPosition = tx1BufferAddress;
-        data += length - 1;
-        while (tx1BufferPosition < tx1BufferAddress + length) {
-             *(tx1BufferPosition++) = *(data--);
+        // serial write the data
+        for (byte = data; byte < data + length; ++byte) {
+            // wait transfer buffer ready till overtime
+            while (!(UC1IFG&UCA1TXIFG)) {
+                if (++tc == SP_OVERTIME_COUNT)
+                    return SP_ERR_WRITE_OVERTIME;
+            }
+
+            UCA1TXBUF = *byte;
         }
-        UC1IE |= UCA1TXIE;              // Open the transfer interrupt
         break;
     default:
         return SP_ERR_NO_SERIL_PORT;
@@ -344,22 +344,10 @@ __interrupt void USCI1RX_ISR(void)
 #pragma vector=USCIAB0TX_VECTOR
 __interrupt void USCI0TX_ISR(void)
 {
-    UC0IE &= ~UCA0TXIE;             // Close the transfer interrupt first.
-    // sending the reast content if not reach the head
-    if (tx0BufferAddress != tx0BufferPosition) {
-        UC0IE |= UCA0TXIE;          // Open the transfer interrupt
-        UCA0TXBUF = *(--tx0BufferPosition);
-    }
     tx0FuncP();
 }
 #pragma vector=USCIAB1TX_VECTOR
 __interrupt void USCI1TX_ISR(void)
 {
-    UC1IE &= ~UCA1TXIE;             // Close the transfer interrupt
-    // sending the reast content if not reach the head
-    if (tx1BufferAddress != tx1BufferPosition) {
-        UC1IE |= UCA1TXIE;          // Open the transfer interrupt
-        UCA1TXBUF = *(--tx1BufferPosition);
-    }
     tx1FuncP();
 }
