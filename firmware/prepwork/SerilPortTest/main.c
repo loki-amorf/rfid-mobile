@@ -4,42 +4,38 @@
 #include "msp430x24x.h"
 #include "serial_port_driver.h"
 
+// deal with the recieve data when RX0 interrupt occur.
+void RX0IOccured(uchar buf)
+{
+    while (!(SPDI_IsReadyToWrite(URAT0)&SPDI_IsReadyToWrite(URAT0)))
+        ;                               // USCI_A0 & USCI_A1 TX buffer ready?
+    UCA1TXBUF = buf;                    // TX -> RXed character
+    UCA0TXBUF = buf;                    // TX -> RXed character
+}
+// deal with the recieve data when RX1 interrupt occur.
+void RX1IOccured(uchar buf)
+{
+    while (!SPDI_IsReadyToWrite(URAT0))
+        ;                               // USCI_A0 TX buffer ready?
+    UCA0TXBUF = UCA1RXBUF;              // TX -> RXed character
+}
+
 void main(void)
 {
-  WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
-  if (CALBC1_1MHZ ==0xFF || CALDCO_1MHZ == 0xFF)                                     
-  {  
-    while(1);                               // If calibration constants erased
+    WDTCTL = WDTPW + WDTHOLD;                 // Stop WDT
+
+    if (SPDI_Initial() == SP_ERR_CAL_CONST_ERASED)                                     
+    {
+        while(1);                               // If calibration constants erased
                                             // do not load, trap CPU!!
-  }   
-  BCSCTL1 = CALBC1_1MHZ;                    // Set DCO
-  DCOCTL = CALDCO_1MHZ;
+    }
 
-  SPDI_Initial(URATALL, BAUDRATE115k);
-  
-  IE2 |= UCA0RXIE;                          // Enable USCI_A0 RX interrupt
-  UC1IE |= UCA1RXIE;                        // Enable USCI_A1 RX interrupt
+    SPDI_SetRX0FunP(RX0IOccured);
+    SPDI_SetRX1FunP(RX1IOccured);
 
-  __bis_SR_register(LPM0_bits + GIE);       // Enter LPM0, interrupts enabled
-  __bis_SR_register(LPM3_bits + GIE);       // Enter LPM3, interrupts enabled
-  
-  while(1)
-    ;
-}
+    SPDI_Open(URAT0, BAUDRATE115k);
+    SPDI_Open(URAT1, BAUDRATE115k);
 
-// Echo back RXed character, confirm TX buffer is ready first
-#pragma vector=USCIAB0RX_VECTOR
-__interrupt void USCI0RX_ISR(void)
-{
-  while (!(IFG2 & UCA0TXIFG & UCA1TXIFG));  // USCI_A0 & USCI_A1 TX buffer ready?
-  UCA1TXBUF = UCA0RXBUF;                    // TX -> RXed character
-  UCA0TXBUF = UCA0RXBUF;                    // TX -> RXed character
-}
-
-// Echo back RXed character, confirm TX buffer is ready first
-#pragma vector=USCIAB1RX_VECTOR
-__interrupt void USCI1RX_ISR(void)
-{
-  while (!(IFG2 & UCA0TXIFG));  // USCI_A0 & USCI_A1 TX buffer ready?
-  UCA0TXBUF = UCA1RXBUF;                    // TX -> RXed character
+    while(1)
+        ;
 }
