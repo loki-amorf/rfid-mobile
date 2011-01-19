@@ -196,11 +196,11 @@ int SPDI_IsReadyToRead(portType port)
 {
     switch (port) {
     case URAT0:
-        if (!(UC0IFG & UCA0RXIFG))
+        if (rx0BufferPosition == rx0BufferAddress)
             return FALSE;   // if not ready, return FALSE
         break;
     case URAT1:
-        if (!(UC0IFG & UCA1RXIFG))
+        if (rx1BufferPosition == rx1BufferAddress)
             return FALSE;   // if not ready, return FALSE
         break;
     default:
@@ -215,7 +215,8 @@ int SPDI_IsReadyToRead(portType port)
  * Name: SPDI_ReadAll
  * Read the buffer of serial port to data, and return the length of it.
  * 
- * algorithm:
+ * Note:
+ *  at first I want to use the algorithm follow:
  *  the rx0BufferPosition point the last byte of RX Buffer.
  *  let the data follow the rx0BufferPosition's decrease to copy the data.
  *  like the following diagram:
@@ -224,41 +225,51 @@ int SPDI_IsReadyToRead(portType port)
  *     |                     |
  *     V              <--    V
  *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
- *                     <--    ^
- *                            |
- *                           data
+ *     xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+ *                    <--    ^
+ *                           |
+ *                          data
+ * 
+ * But, the interrupt messed the step of data exchange, so, using the index
+ * and judge every loop is more stable I think.
+ *     -- tankery.chen@gmail.com
  */
 int SPDI_ReadAll(portType port, char *data, uchar length)
 {
+    int index;
     if (!SPDI_IsReadyToRead(port))
         return SP_ERR_READ_NOT_READY;
 
     switch (port) {
     case URAT0:
-        if (length < (rx0BufferPosition - rx0BufferAddress))
-            return SP_ERR_BUFFER_TOO_SHORT;
-        
-        data = rx0BufferPosition + 1;
-        
-        do {
-            *(--data) = *rx0BufferPosition;
-        }while(--rx0BufferPosition < rx0BufferAddress);
+        for (index = 0; index < (rx0BufferPosition - rx0BufferAddress); ++index) {
+            // make sure the length of data is enough;
+            if (length < index+1)
+                return SP_ERR_BUFFER_TOO_SHORT;
+            // exchange the data
+            *(data + index) = *(rx0BufferAddress + index);
+        }
+        // exchange finished, reset position.
+        rx0BufferPosition = rx0BufferAddress;
+        UC0IE |= UCA0RXIE;  // make sure the RXI is enable
         break;
     case URAT1:
-        if (length < (rx1BufferPosition - rx1BufferAddress))
-            return SP_ERR_BUFFER_TOO_SHORT;
-        
-        data = rx1BufferPosition + 1;
-        
-        do {
-            *(--data) = *rx1BufferPosition;
-        }while(--rx1BufferPosition < rx1BufferAddress);
+        for (index = 0; index < (rx1BufferPosition - rx1BufferAddress); ++index) {
+            // make sure the length of data is enough;
+            if (length < index+1)
+                return SP_ERR_BUFFER_TOO_SHORT;
+            // exchange the data
+            *(data + index) = *(rx1BufferAddress + index);
+        }
+        // exchange finished, reset position.
+        rx1BufferPosition = rx1BufferAddress;
+        UC1IE |= UCA1RXIE;  // make sure the RXI is enable
         break;
     default:
-        return FALSE;
+        return SP_ERR_NO_SERIL_PORT;
     }
-    
-    return SP_NORMAL;
+
+    return index;
 }
 
 /*
@@ -310,21 +321,37 @@ int SPDI_Write(portType port, char *data, uchar length)
 ///////////////////////////////////////////////////////////////////////////
 // Serial port interrupt functions
 
+// URAT0 recive exchange interrupt.
 #pragma vector=USCIAB0RX_VECTOR
 __interrupt void USCI0RX_ISR(void)
 {
+    if (rx0BufferPosition < rx0BufferAddress + BUF_LENGTH) {
+        *rx0BufferPosition = UCA0RXBUF;
+        ++rx0BufferPosition;
+    }
+    else
+        UC0IE &= ~UCA0RXIE; // disable interrupt when buffer is full.
     rx0FuncP(UCA0RXBUF);
 }
+// URAT1 recive exchange interrupt.
 #pragma vector=USCIAB1RX_VECTOR
 __interrupt void USCI1RX_ISR(void)
 {
+    if (rx1BufferPosition < rx1BufferAddress + BUF_LENGTH) {
+        *(rx1BufferPosition) = UCA1RXBUF;
+        ++rx1BufferPosition;
+    }
+    else
+        UC1IE &= ~UCA1RXIE; // disable interrupt when buffer is full.
     rx1FuncP(UCA1RXBUF);
 }
+// URAT0 transfer exchange interrupt.
 #pragma vector=USCIAB0TX_VECTOR
 __interrupt void USCI0TX_ISR(void)
 {
     tx0FuncP();
 }
+// URAT1 transfer exchange interrupt.
 #pragma vector=USCIAB1TX_VECTOR
 __interrupt void USCI1TX_ISR(void)
 {
