@@ -1,5 +1,5 @@
-/*
- * serial_port_driver.cpp
+/**
+ * serial_port_driver.c
  */
 #include "serial_port_driver.h"
 
