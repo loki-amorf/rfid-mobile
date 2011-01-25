@@ -1,5 +1,15 @@
 /**
  * serial_port_driver.h
+ *
+ *     目前来说，部分函数（SPDI_IsReadyToWrite等）在中断中的处理不是很好，
+ * 尽量不要在中断中调用这些函数（当然，需要的话可以尝试）。最好如示例一
+ * 样，在主流程中探测并执行。
+ *
+ *     若要使用中断，先声明一个函数，这个函数是希望其在中断到来后被调用
+ * 的函数。然后使用SPDI_SetRX0FunP系列函数指定中断执行该函数。（使用函数
+ * 指针实现。可参考实例）
+ *
+ *     -- tankery.chen@gmail.com				Jan 25, 2011
  */
 #ifndef __SERIAL_PORT_DRIVER_H_
 #define __SERIAL_PORT_DRIVER_H_
