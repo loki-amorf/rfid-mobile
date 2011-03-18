@@ -1,4 +1,6 @@
+#include <stdio.h>
 #include "driver_kbd.h"
+#include "driver_lcd.h"
 
 void kbd_scanner(void)
 {
@@ -19,7 +21,7 @@ void kbd_scanner(void)
 	KBD_DIR = 0xF0;
 	
 	char pinOut;
-	unsigned short keyNum, kc;
+	unsigned short keyNum, kc, i;
 	
 	// put KR0~3 to high and read from KC0~3 to get keyNum
 	pinOut = 0x01;
@@ -34,4 +36,25 @@ void kbd_scanner(void)
 		pinOut <<= 1;
 	}
 	kbd_keyPressed(keyNum);
+}
+
+void kbd_keyPressed(unsigned short keyNum)
+{
+	static unsigned short lastKeyNum;
+	
+	if (keyNum == 0x00) {
+		return;
+	}
+	
+	if (keyNum == lastKeyNum) {
+		return;
+	}
+	
+	lastKeyNum = keyNum;
+	
+	// welcome newcomer
+	char str[5];
+	setCharPos(0, 0);
+	sprintf(str, "%x", keyNum);
+	writeStr(str);
 }

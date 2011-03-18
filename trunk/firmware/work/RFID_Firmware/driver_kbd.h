@@ -8,6 +8,8 @@
 #ifndef DRIVER_KBD_H_
 #define DRIVER_KBD_H_
 
+#include <msp430x14x.h>
+
 #define KBD_IN 		(P1IN)
 #define KBD_OUT 	(P1OUT)
 #define KBD_DIR		(P1DIR)
