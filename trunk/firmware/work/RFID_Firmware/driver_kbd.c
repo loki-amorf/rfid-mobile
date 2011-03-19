@@ -18,7 +18,7 @@ void kbd_scanner(void)
 	 * KR0 ~ KR3 : OUT
 	 * KC0 ~ KC3 : IN
 	 */
-	KBD_DIR = 0xF0;
+	KBD_DIR = 0x0F;
 	
 	char pinOut;
 	unsigned short keyNum, kc, i;
@@ -27,11 +27,11 @@ void kbd_scanner(void)
 	pinOut = 0x01;
 	keyNum = 0x0000;
 	for (i = 0; i < 4; ++i) {
-		BIT_SET(KBD_OUT, pinOut);
-		if (KBD_IN && 0xF0 == 0) {
+		KBD_OUT = pinOut;
+		if (KBD_IN & 0xF0 == 0) {
 			continue;
 		}
-		kc = (KBD_IN && 0xF0) >> 4;
+		kc = (KBD_IN & 0xF0) >> 4;
 		keyNum |= (kc << (i * 4));
 		pinOut <<= 1;
 	}
@@ -40,7 +40,7 @@ void kbd_scanner(void)
 
 void kbd_keyPressed(unsigned short keyNum)
 {
-	static unsigned short lastKeyNum;
+	static unsigned short lastKeyNum = 0x00;
 	
 	if (keyNum == 0x00) {
 		return;
@@ -53,8 +53,4 @@ void kbd_keyPressed(unsigned short keyNum)
 	lastKeyNum = keyNum;
 	
 	// welcome newcomer
-	char str[5];
-	setCharPos(0, 0);
-	sprintf(str, "%x", keyNum);
-	writeStr(str);
 }

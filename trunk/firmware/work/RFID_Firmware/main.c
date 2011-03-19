@@ -11,18 +11,12 @@ void main(void)
 	
 	// LCD driver
 	initLcd();
-	
-	writeStr("Hello");
-	
-	do {
-        ;
-    } while (1);
-	
+
 	// Set timer for keyboard scan
 	CCTL0 = CCIE; // CCR0 interrupt enabled
 	CCR0 = 10000; // 10ms
 	TACTL = TASSEL_2 + MC_1; // SMCLK, contmode
-	_BIS_SR(LPM0_bits + GIE);                 // Enter LPM0 w/ interrupt
+	_BIS_SR(LPM0_bits + GIE); // Enter LPM0 w/ interrupt
 	
     do {
         ;
