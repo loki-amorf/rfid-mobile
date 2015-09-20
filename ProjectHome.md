@@ -1,0 +1,1 @@
+This is a practice project of the High Frequency Course for SeedClass08. We will work on it during the next half of this semester.And the main technology includes GSM and RFID.

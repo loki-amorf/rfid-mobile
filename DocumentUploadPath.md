@@ -1,0 +1,1 @@
+google code 的容量大小有限，对于查找好的资料，请按照自己的理解命名后上传至团队FTP，我们小组的目录是：/SeedClass/08级种子班/SeedClass08课程/高频电子线路/RFID\_Mobile\_Temp/
